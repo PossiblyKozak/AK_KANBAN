@@ -1,0 +1,10 @@
+C:\Users\akozak1396\Desktop\AK_KANBAN\AK_KANBAN_Workstation\AK_KANBAN_Config\obj\Debug\KanbanWorkStation.csprojAssemblyReference.cache
+C:\Users\akozak1396\Desktop\AK_KANBAN\AK_KANBAN_Workstation\AK_KANBAN_Config\obj\Debug\AK_KANBAN_Config.frmMain.resources
+C:\Users\akozak1396\Desktop\AK_KANBAN\AK_KANBAN_Workstation\AK_KANBAN_Config\obj\Debug\KanbanWorkStation.csproj.GenerateResource.cache
+C:\Users\akozak1396\Desktop\AK_KANBAN\AK_KANBAN_Workstation\AK_KANBAN_Config\obj\Debug\KanbanWorkStation.csproj.CoreCompileInputs.cache
+C:\Users\akozak1396\Desktop\AK_KANBAN\AK_KANBAN_Workstation\AK_KANBAN_Config\bin\Debug\AK_KANBAN_Workstation.exe.config
+C:\Users\akozak1396\Desktop\AK_KANBAN\AK_KANBAN_Workstation\AK_KANBAN_Config\bin\Debug\AK_KANBAN_Workstation.exe
+C:\Users\akozak1396\Desktop\AK_KANBAN\AK_KANBAN_Workstation\AK_KANBAN_Config\bin\Debug\AK_KANBAN_Workstation.pdb
+C:\Users\akozak1396\Desktop\AK_KANBAN\AK_KANBAN_Workstation\AK_KANBAN_Config\obj\Debug\AK_KANBAN_Workstation.Properties.Resources.resources
+C:\Users\akozak1396\Desktop\AK_KANBAN\AK_KANBAN_Workstation\AK_KANBAN_Config\obj\Debug\AK_KANBAN_Workstation.exe
+C:\Users\akozak1396\Desktop\AK_KANBAN\AK_KANBAN_Workstation\AK_KANBAN_Config\obj\Debug\AK_KANBAN_Workstation.pdb
