@@ -41,10 +41,7 @@ AS
 	SET @bulbBinSize = (SELECT [Value] FROM tblConfig WHERE [Option]= 'BulbBinSize');
 	SET @bezelBinSize = (SELECT [Value] FROM tblConfig WHERE [Option]= 'BezelBinSize');
 
-	INSERT INTO tblWorkers ([SkillLevel]) VALUES (@skillID);
-	SET @workerID = (SELECT TOP 1 ID FROM tblWorkers ORDER BY ID DESC);
-
-	INSERT INTO tblWorkStations ([WorkerID]) VALUES (@workerID);
+	INSERT INTO tblWorkStations ([WorkerID]) VALUES (@skillID);
 	SET @workstationID = (SELECT TOP 1 ID FROM tblWorkStations ORDER BY ID DESC);
 
 	INSERT INTO tblPartBins ([PartName], [BinSize], [BinLevel], [WorkStationID]) VALUES ('Harness', @harnessBinSize, @harnessBinSize, @workstationID );
@@ -82,12 +79,13 @@ AS
 	DECLARE @oneid INT -- or the appropriate type
 	DECLARE the_cursor CURSOR FAST_FORWARD
 
-	FOR SELECT ID FROM tblTestTray WHERE Tested = 0
+	FOR SELECT ID FROM tblTestTray WHERE Tested = 0 AND (SELECT Count(*) FROM tblLamps WHERE tblLamps.TestTrayID = tblTestTray.ID) = tblTestTray.MaxLamps
 		OPEN the_cursor
 		FETCH NEXT FROM the_cursor INTO @oneid
 		WHILE @@FETCH_STATUS = 0
 		BEGIN
 			EXEC TestTheTray @oneid
+			UPDATE tblTestTray SET Tested = 1 WHERE ID = @oneid
 			FETCH NEXT FROM the_cursor INTO @oneid
 		END
 		CLOSE the_cursor
@@ -95,11 +93,11 @@ AS
 
 	DECLARE @testTrayID INT
 	DECLARE @lampNum INT
-	SET @testTrayID = (SELECT ID FROM tblTestTray WHERE [MaxLamps] > (SELECT COUNT (ID) FROM tblLamps WHERE TestTrayID = tblTestTray.ID));
+	SET @testTrayID = (SELECT TOP 1 ID FROM tblTestTray WHERE [MaxLamps] > (SELECT COUNT (ID) FROM tblLamps WHERE TestTrayID = tblTestTray.ID));
 
 	IF @testTrayID IS NULL
 		EXEC CreateTestTray;
-		SET @testTrayID = (SELECT ID FROM tblTestTray WHERE [MaxLamps] > (SELECT COUNT (ID) FROM tblLamps WHERE TestTrayID = tblTestTray.ID));
+		SET @testTrayID = (SELECT TOP 1 ID FROM tblTestTray WHERE [MaxLamps] > (SELECT COUNT (ID) FROM tblLamps WHERE TestTrayID = tblTestTray.ID));
 	SET @lampNum = (SELECT COUNT (ID) FROM tblLamps WHERE TestTrayID = @testTrayID);
 	SELECT @testTrayID, @lampNum;
 GO
@@ -159,15 +157,15 @@ AS
 		UPDATE tblLamps
 		SET TestPassed = 1
 		WHERE ID = @lampID
-
-		UPDATE tblOrders
-		SET CompLamps = CompLamps + 1
-		WHERE ID = @orderID
 	END;
 	ELSE
 		UPDATE tblLamps
 		SET TestPassed = 0
 		WHERE ID = @lampID
+
+		UPDATE tblOrders
+		SET CompLamps = CompLamps - 1
+		WHERE ID = @orderID
 GO
 
 --BELOW IS THE PROCEDURE TO ADD A NEW ORDER WITH A GIVEN SIZE
