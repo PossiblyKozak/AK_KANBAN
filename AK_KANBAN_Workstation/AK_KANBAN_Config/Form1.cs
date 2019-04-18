@@ -102,7 +102,8 @@ namespace AK_KANBAN_Config
                     bs = string.Format("{0:F2} Seconds Remaining", Math.Max((timer.Interval - sw.Elapsed.TotalMilliseconds) / 1000, 0));
                     Invoke(new SafeCallDelegate(refreshTimerString));
                 }
-                catch { }                
+                catch { }
+                Thread.Sleep(10);
             }
         }
         void refreshTimerString()
