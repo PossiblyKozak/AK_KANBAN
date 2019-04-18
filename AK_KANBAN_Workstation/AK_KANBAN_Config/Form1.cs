@@ -54,12 +54,6 @@ namespace AK_KANBAN_Config
                 s.employeeCategory = dr[2].ToString();
                 cbWorkers.Items.Add(s);
             }
-
-            cbWorkstation.Items.Add("New Workstation");
-            foreach (DataRow dr in GetData("SELECT ID FROM tblWorkStations WHERE IsActive = 0", dataAdapterConfig).Rows)
-            {
-                cbWorkstation.Items.Add(dr[0]);
-            }
         }
 
         private DataTable GetData(string selectCommand, SqlDataAdapter sda)
@@ -98,17 +92,19 @@ namespace AK_KANBAN_Config
             while (isRunning)
             {
                 if (isPaused) { timer.Stop(); sw.Stop(); }
-                else if (!sw.IsRunning) { timer.Start(); sw.Restart(); }
+                else if (!sw.IsRunning)
+                {
+                    timer.Start();
+                    sw.Restart();
+                }
                 try
                 {
                     bs = string.Format("{0:F2} Seconds Remaining", Math.Max((timer.Interval - sw.Elapsed.TotalMilliseconds) / 1000, 0));
                     Invoke(new SafeCallDelegate(refreshTimerString));
                 }
-                catch { }
-                Thread.Sleep(10);
+                catch { }                
             }
         }
-
         void refreshTimerString()
         {
             lblTimeBeforeRefresh.Text = bs;
@@ -119,13 +115,13 @@ namespace AK_KANBAN_Config
         {
             if (cbWorkers.SelectedIndex >= 0 && cbWorkstation.SelectedIndex >= 0)
             {
+                btnCancel.Enabled = true;
                 if (workstationID == -1)
                 {
                     isPaused = false;
                     btnBegin.Enabled = false;
                     cbWorkers.Enabled = false;
                     cbWorkstation.Enabled = false;
-                    btnCancel.Enabled = true;
 
                     DataTable temp;
                     SkillLevel tempSkillLevel = (SkillLevel)cbWorkers.SelectedItem;
@@ -185,6 +181,20 @@ namespace AK_KANBAN_Config
 
         private void createLamp(object sender, System.Timers.ElapsedEventArgs e)
         {
+            if (isRunning)
+            {
+                try
+                {
+                    Invoke(new SafeCallDelegate(setTimer));
+                    sw.Restart();
+                    timer.Start();
+                }
+                catch
+                {
+
+                }
+            }
+
             DataTable temp = GetData("EXEC GetOpenOrder", dataAdapterConfig);
 
             if (temp.Rows.Count == 1)
@@ -210,16 +220,22 @@ namespace AK_KANBAN_Config
                 }
                 else { }
             }
-
-            Invoke(new SafeCallDelegate(setTimer));
-            sw.Restart();
-            timer.Start();
         }
 
         private void frmMain_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (workstationID != -1) { GetData(string.Format("UPDATE tblWorkstations SET IsActive = 0, WorkerID = 1 WHERE ID = {0}", workstationID), dataAdapterConfig); }
             isRunning = false;
+            if (workstationID != -1) { GetData(string.Format("UPDATE tblWorkstations SET IsActive = 0, WorkerID =  1 WHERE ID = {0}", workstationID), dataAdapterConfig); }
+        }
+
+        private void CbWorkstation_Click(object sender, EventArgs e)
+        {
+            cbWorkstation.Items.Clear();
+            cbWorkstation.Items.Add("New Workstation");
+            foreach (DataRow dr in GetData("SELECT ID FROM tblWorkStations WHERE IsActive = 0", dataAdapterConfig).Rows)
+            {
+                cbWorkstation.Items.Add(dr[0]);
+            }
         }
 
         private void btnCancel_Click(object sender, EventArgs e)

@@ -116,12 +116,13 @@
             this.cbWorkstation.Name = "cbWorkstation";
             this.cbWorkstation.Size = new System.Drawing.Size(92, 21);
             this.cbWorkstation.TabIndex = 8;
+            this.cbWorkstation.Click += new System.EventHandler(this.CbWorkstation_Click);
             // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(396, 82);
+            this.ClientSize = new System.Drawing.Size(391, 90);
             this.Controls.Add(this.cbWorkstation);
             this.Controls.Add(this.lblLampsMade);
             this.Controls.Add(this.lblTimeBeforeRefresh);
@@ -131,7 +132,7 @@
             this.Controls.Add(this.cbWorkers);
             this.Controls.Add(this.btnBegin);
             this.Name = "frmMain";
-            this.Text = "AK_KANBAN Config";
+            this.Text = "AK_KANBAN Workstation";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.frmMain_FormClosing);
             this.ResumeLayout(false);
             this.PerformLayout();

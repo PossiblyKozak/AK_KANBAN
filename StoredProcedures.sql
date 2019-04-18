@@ -113,6 +113,10 @@ AS
 			UPDATE tblPartBins
 			SET BinLevel = BinLevel - 1
 			WHERE WorkStationID = @workstationID;
+			
+			UPDATE tblOrders
+			SET CompLamps = CompLamps + 1
+			WHERE ID = @orderID
 
 			DECLARE @workerID INT
 			SET @workerID = (SELECT TOP 1 [workerID] FROM tblWorkStations WHERE ID = @workStationID);
@@ -144,7 +148,7 @@ GO
 CREATE PROCEDURE TestTheLamp @lampID INT
 AS
 	DECLARE @odds INT
-	SET @odds = (SELECT FailRate FROM tblSkillLevels JOIN tblLamps ON tblLamps.ID = @lampID JOIN tblWorkers ON tblWorkers.ID = tblLamps.WorkerID WHERE tblWorkers.SkillLevel = tblSkillLevels.ID)
+	SET @odds = (SELECT FailRate FROM tblSkillLevels JOIN tblLamps ON tblLamps.ID = @lampID WHERE tblSkillLevels.ID = tblLamps.WorkerID)
 
 	DECLARE @orderID INT
 	SET @orderID = (SELECT OrderID FROM tblLamps WHERE ID = @lampID)
@@ -153,12 +157,13 @@ AS
 	SET @rand = RAND()*100
 
 	IF (@rand > @odds)
-	BEGIN;
+	BEGIN
 		UPDATE tblLamps
 		SET TestPassed = 1
 		WHERE ID = @lampID
-	END;
+	END
 	ELSE
+	BEGIN
 		UPDATE tblLamps
 		SET TestPassed = 0
 		WHERE ID = @lampID
@@ -166,6 +171,7 @@ AS
 		UPDATE tblOrders
 		SET CompLamps = CompLamps - 1
 		WHERE ID = @orderID
+	END
 GO
 
 --BELOW IS THE PROCEDURE TO ADD A NEW ORDER WITH A GIVEN SIZE
