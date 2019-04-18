@@ -6,3 +6,6 @@
 *.cache
 /AK_KANBAN_Workstation/.vs/AK_KANBAN_WorkStation/v16
 /AK_KANBAN_Workstation/AK_KANBAN_Config/obj/Debug/AK_KANBAN_WorkStation.csproj.FileListAbsolute.txt
+Properties
+bin
+obj
