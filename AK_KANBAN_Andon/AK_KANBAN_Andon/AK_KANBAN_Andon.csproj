@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{50F0015E-CF92-4408-913F-0647F9CD77B9}</ProjectGuid>
+    <ProjectGuid>{F67BB13A-DC45-4112-9AF4-033FC5F978AA}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>AK_KANBAN_Config</RootNamespace>
-    <AssemblyName>AK_KANBAN_Config</AssemblyName>
+    <RootNamespace>AK_KANBAN_Andon</RootNamespace>
+    <AssemblyName>AK_KANBAN_Andon</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -78,9 +78,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config">
-      <SubType>Designer</SubType>
-    </None>
+    <None Include="App.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

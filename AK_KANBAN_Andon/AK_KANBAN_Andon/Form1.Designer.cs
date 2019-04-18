@@ -33,6 +33,7 @@
             this.cbWorkstation = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
             this.cbAutoRefresh = new System.Windows.Forms.CheckBox();
+            this.btnStatus = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.dgvConfig)).BeginInit();
             this.SuspendLayout();
             // 
@@ -90,11 +91,21 @@
             this.cbAutoRefresh.Text = "Auto-Update";
             this.cbAutoRefresh.UseVisualStyleBackColor = true;
             // 
+            // btnStatus
+            // 
+            this.btnStatus.Enabled = false;
+            this.btnStatus.Location = new System.Drawing.Point(359, 21);
+            this.btnStatus.Name = "btnStatus";
+            this.btnStatus.Size = new System.Drawing.Size(25, 23);
+            this.btnStatus.TabIndex = 12;
+            this.btnStatus.UseVisualStyleBackColor = true;
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(396, 339);
+            this.Controls.Add(this.btnStatus);
             this.Controls.Add(this.cbAutoRefresh);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.cbWorkstation);
@@ -116,6 +127,7 @@
         private System.Windows.Forms.ComboBox cbWorkstation;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.CheckBox cbAutoRefresh;
+        private System.Windows.Forms.Button btnStatus;
     }
 }
 
