@@ -23,11 +23,17 @@ namespace AK_KANBAN_Config
         private delegate void SafeCallDelegate();
         private string bs;
         private BindingSource bindingConfig = new BindingSource();
+
+        private BindingSource LampCount = new BindingSource();
+
+        int RequiredLamps, CompletedLamps, ActiveWorkstations, FailedLamps, PassedLamps, AllLamps;
+
         private SqlDataAdapter dataAdapterConfig;
         private Thread t;
         int simSpeed, minutesPerRefill;
         Stopwatch sw = new Stopwatch();
         System.Timers.Timer timer = new System.Timers.Timer();
+        System.Timers.Timer timerStatsRefresh = new System.Timers.Timer();
 
         bool isRunning = true, isPaused = true;
         int runs = 0;
@@ -38,6 +44,31 @@ namespace AK_KANBAN_Config
             lblTimeBeforeRefresh.Text = bs;
             lblNumIterations.Text = runs.ToString();
             btnStartStop.Enabled = false;
+
+            chartLamps.Series.Clear();
+            chartLamps.Series.Add("All Lamps");
+            chartLamps.Series.Add("Passed Lamps");
+            chartLamps.Series.Add("Failed Lamps");
+            //chartLamps.ChartAreas[0].AxisX.la
+
+            chartLamps.Series[0].IsValueShownAsLabel = true;
+            chartLamps.Series[1].IsValueShownAsLabel = true;
+            chartLamps.Series[2].IsValueShownAsLabel = true;
+
+            chartLamps.ChartAreas[0].AxisX.LabelStyle.Enabled = false;
+            chartLamps.ChartAreas[0].AxisY.Title = "Number of Lamps";
+            chartLamps.Titles.Add("Lamp Statistics");
+
+            chartOrder.Series.Clear();
+            chartOrder.Series.Add("Ordered Lamps");
+            chartOrder.Series.Add("Completed Lamps");
+
+            chartOrder.ChartAreas[0].AxisX.LabelStyle.Enabled = false;
+            chartOrder.ChartAreas[0].AxisY.Title = "Number of Lamps";
+            chartOrder.Titles.Add("Order Statistics");
+
+            chartOrder.Series[0].IsValueShownAsLabel = true;
+            chartOrder.Series[1].IsValueShownAsLabel = true;
         }
 
         void refreshTimerString()
@@ -48,6 +79,10 @@ namespace AK_KANBAN_Config
 
         private void runTimer()
         {
+            timerStatsRefresh.Interval = 1000;
+            timerStatsRefresh.AutoReset = true;
+            timerStatsRefresh.Elapsed += TimerStatsRefresh_Elapsed;
+            timerStatsRefresh.Start();
             timer.Interval = (minutesPerRefill * 60000) / simSpeed;
             timer.AutoReset = false;
             timer.Elapsed += RefreshBins;
@@ -60,11 +95,52 @@ namespace AK_KANBAN_Config
                 try
                 {
                     Invoke(new SafeCallDelegate(refreshTimerString));
-                    bs = string.Format("{0:F2} Seconds Remaining", Math.Max((timer.Interval - sw.Elapsed.TotalMilliseconds)/1000, 0));              
+                    bs = string.Format("{0:F2} Seconds Remaining", Math.Max((timer.Interval - sw.Elapsed.TotalMilliseconds)/1000, 0));                    
                 }
                 catch { }
                 Thread.Sleep(10);
             }
+        }
+
+        private void TimerStatsRefresh_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            DataTable OrderStats = GetData("SELECT SUM(ReqLamp) AS RL, SUM(CompLamps) AS CL FROM tblOrders;", dataAdapterConfig);
+            DataTable ActiveWorkStations = GetData("SELECT COUNT(*) AS 'Active Workstations' FROM tblWorkStations WHERE IsActive = 1;", dataAdapterConfig);
+            DataTable LampStats = GetData("SELECT COUNT(*) AS 'Total Lamps' FROM tblLamps WHERE TestPassed = 1 UNION SELECT COUNT(*) FROM tblLamps UNION SELECT COUNT(*) FROM tblLamps WHERE TestPassed = 0;", dataAdapterConfig);
+
+            RequiredLamps = (int)OrderStats.Rows[0][0];
+            CompletedLamps = (int)OrderStats.Rows[0][1];
+
+            ActiveWorkstations = (int)ActiveWorkStations.Rows[0][0];
+
+            FailedLamps = (int)LampStats.Rows[0][0];
+            PassedLamps = (int)LampStats.Rows[1][0];
+            AllLamps = (int)LampStats.Rows[2][0];
+
+            try
+            {
+                Invoke(new SafeCallDelegate(RefreshCharts));
+            }
+            catch { }
+        }
+
+        private void RefreshCharts()
+        {
+            chartOrder.Series[0].Points.Clear();
+            chartOrder.Series[1].Points.Clear();
+
+            chartLamps.Series[0].Points.Clear();
+            chartLamps.Series[1].Points.Clear();
+            chartLamps.Series[2].Points.Clear();
+            
+            chartOrder.Series[0].Points.AddY(RequiredLamps);
+            chartOrder.Series[1].Points.AddY(CompletedLamps);
+
+            chartLamps.Series[0].Points.AddY(AllLamps);
+            chartLamps.Series[1].Points.AddY(PassedLamps);
+            chartLamps.Series[2].Points.AddY(FailedLamps);
+
+            lblActiveWorkstations.Text = string.Format("Active Workstations: {0}", ActiveWorkstations);
         }
 
         private void RefreshBins(object sender, System.Timers.ElapsedEventArgs e)

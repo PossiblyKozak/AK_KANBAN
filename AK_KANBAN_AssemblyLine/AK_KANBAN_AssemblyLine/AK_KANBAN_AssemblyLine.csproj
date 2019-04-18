@@ -4,7 +4,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{50F0015E-CF92-4408-913F-0647F9CD77B9}</ProjectGuid>
+    <ProjectGuid>{79AF1F39-A2DE-4B11-ACCC-2F835DD49A95}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <RootNamespace>AK_KANBAN_AssemblyLine</RootNamespace>
     <AssemblyName>AK_KANBAN_AssemblyLine</AssemblyName>
@@ -36,6 +36,7 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Windows.Forms.DataVisualization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
