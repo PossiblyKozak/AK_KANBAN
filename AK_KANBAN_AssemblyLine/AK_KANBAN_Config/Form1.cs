@@ -69,10 +69,10 @@ namespace AK_KANBAN_Config
 
         private void RefreshBins(object sender, System.Timers.ElapsedEventArgs e)
         {
-            GetData("EXEC FillBins", dataAdapterConfig);
-            runs++;
             sw.Restart();
             timer.Start();
+            GetData("EXEC FillBins", dataAdapterConfig);
+            runs++;
         }
 
         private void btnConnect_Click(object sender, EventArgs e)
@@ -103,9 +103,7 @@ namespace AK_KANBAN_Config
             }
             catch (SqlException)
             {
-                MessageBox.Show("To run this example, replace the value of the " +
-                    "connectionString variable with a connection string that is " +
-                    "valid for your system.");
+                MessageBox.Show("Error in the SQL connection");
             }
             return table;
         }
